@@ -13,7 +13,7 @@ To run the project you will need *Java 17*, *Gradle 7.5* and *PostgreSQL*
 
 To start the project you need to perform the following steps:
 1. pull this project
-2. сreate a *PostgreSQL* database
+2. сreate a *PostgreSQL* database with two tables **```product```** and **```discount_card```**
 3. in the *application.properties* file which is located along the path *src/main/resources/*<br> 
    set the **```port```**, **```database name```**, **```username```** and **```password```**
 4. using the *terminal* or *cmd* go to the folder with this project
