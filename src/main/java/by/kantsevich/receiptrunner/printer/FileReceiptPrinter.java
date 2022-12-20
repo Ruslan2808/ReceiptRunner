@@ -34,6 +34,7 @@ public class FileReceiptPrinter implements ReceiptPrinter {
         }
 
         Files.write(FILE_PATH, textReceipt.getBytes(), StandardOpenOption.APPEND);
+        System.out.printf("The receipt is written to the file %s%n", FILE_PATH);
     }
 
 }
