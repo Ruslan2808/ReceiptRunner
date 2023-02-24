@@ -24,13 +24,16 @@ dependencies {
 }
 
 bootJar {
-    archiveFileName = "ReceiptRunner.jar"
+    archiveFileName = "${project.name}.jar"
     manifest {
-        attributes 'Start-Class': 'by.kantsevich.receiptrunner.ReceiptRunnerApplication'
+        attributes (
+                'Start-Class': 'by.kantsevich.receiptrunner.ReceiptRunnerApplication'
+        )
     }
-    destinationDirectory = file('/')
+
+    destinationDirectory = file(rootDir)
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
 }
