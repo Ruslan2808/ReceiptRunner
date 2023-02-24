@@ -35,16 +35,18 @@ public class TextReceiptMapper implements ReceiptMapper<String> {
         for (ReceiptProduct receiptProduct : receipt.getReceiptProducts()) {
             textReceipt.append(
                     String.format("|%-5.5s %-23.23s %8.8s$ %9.9s$|\n",
-                    receiptProduct.getQty(),
-                    receiptProduct.getName(),
-                    String.format("%.2f", receiptProduct.getPrice()),
-                    String.format("%.2f", receiptProduct.calculateTotal())
-            ));
+                            receiptProduct.getQty(),
+                            receiptProduct.getName(),
+                            String.format("%.2f", receiptProduct.getPrice()),
+                            String.format("%.2f", receiptProduct.calculateTotal())
+                    ));
 
-            if (receiptProduct.getPromotional() && receiptProduct.getQty() > 5) {
+            if (receiptProduct.getIsPromotional() && receiptProduct.getQty() > 5) {
                 textReceipt.append(
-                        String.format("|%-5.5s %5.5s %-6.6s %-31.31s|\n",
-                        "", "DISC:", ReceiptProduct.DISCOUNT_PROMOTIONAL_PRODUCT + "%", "")
+                        String.format(
+                                "|%-5.5s %5.5s %-6.6s %-31.31s|\n",
+                                "", "DISC:", String.format("%.2f%%", ReceiptProduct.DISCOUNT_PROMOTIONAL_PRODUCT), ""
+                        )
                 );
             }
         }
@@ -55,7 +57,7 @@ public class TextReceiptMapper implements ReceiptMapper<String> {
             textReceipt.append(
                     String.format("|TOTAL WITHOUT DISCOUNT %26.26s$|\n",
                     String.format("%.2f", receipt.calculateUnDiscountedTotal()))
-            ).append(String.format("|DISCOUNT %41.41s|\n", receipt.getDiscount() + "%"));
+            ).append(String.format("|DISCOUNT %40.40s%%|\n", String.format("%.2f", receipt.getDiscount())));
         }
 
         textReceipt.append(String.format("|TOTAL %43.43s$|\n", String.format("%.2f", receipt.calculateTotal())))

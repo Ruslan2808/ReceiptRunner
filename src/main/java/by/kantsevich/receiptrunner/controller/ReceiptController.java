@@ -1,6 +1,6 @@
 package by.kantsevich.receiptrunner.controller;
 
-import by.kantsevich.receiptrunner.exception.DiscountCardNotFound;
+import by.kantsevich.receiptrunner.exception.DiscountCardNotFoundException;
 import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
 import by.kantsevich.receiptrunner.parser.PurchaseDataParser;
 import by.kantsevich.receiptrunner.printer.ConsoleReceiptPrinter;
@@ -39,7 +39,7 @@ public class ReceiptController {
             @RequestParam(value = "productId") List<Integer> productsId,
             @RequestParam(value = "productQty") List<Integer> productsQty,
             @RequestParam(value = "card", defaultValue = "0", required = false) Integer numberDiscountCard
-    ) throws ProductNotFoundException, DiscountCardNotFound, IOException {
+    ) throws ProductNotFoundException, DiscountCardNotFoundException, IOException {
 
         Map<Integer, Integer> products = PurchaseDataParser.getProducts(productsId, productsQty);
 

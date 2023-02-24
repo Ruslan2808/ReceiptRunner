@@ -2,43 +2,24 @@ package by.kantsevich.receiptrunner.model;
 
 import by.kantsevich.receiptrunner.model.product.ReceiptProduct;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import java.util.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Receipt {
 
     private LocalDate creationDate;
     private LocalTime creationTime;
     private List<ReceiptProduct> receiptProducts;
     private Double discount;
-
-    public Receipt(LocalDate creationDate,
-                   LocalTime creationTime,
-                   List<ReceiptProduct> receiptProducts,
-                   Double discount) {
-        this.creationDate = creationDate;
-        this.creationTime = creationTime;
-        this.receiptProducts = receiptProducts;
-        this.discount = discount;
-    }
-
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-
-    public LocalTime getCreationTime() {
-        return creationTime;
-    }
-
-    public List<ReceiptProduct> getReceiptProducts() {
-        return receiptProducts;
-    }
-
-    public Double getDiscount() {
-        return discount;
-    }
 
     public Double calculateUnDiscountedTotal() {
         return receiptProducts.stream()
@@ -48,7 +29,7 @@ public class Receipt {
     }
 
     public Double calculateTotal() {
-        return calculateUnDiscountedTotal() * (1 - this.discount / 100);
+        return Math.round(calculateUnDiscountedTotal() * (1 - this.discount / 100.0) * 100.0) / 100.0;
     }
 
 }

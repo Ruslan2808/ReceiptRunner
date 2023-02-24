@@ -2,8 +2,15 @@ package by.kantsevich.receiptrunner.model.entity;
 
 import jakarta.persistence.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "product")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Product {
 
     @Id
@@ -11,30 +18,5 @@ public class Product {
     private String name;
     private Double price;
     private Boolean isPromotional;
-
-    public Product() {}
-
-    public Product(Long id, String name, Double price, Boolean isPromotional) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.isPromotional = isPromotional;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public Boolean getPromotional() {
-        return isPromotional;
-    }
 
 }

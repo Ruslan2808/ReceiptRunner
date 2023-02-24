@@ -2,8 +2,7 @@ package by.kantsevich.receiptrunner.service;
 
 import by.kantsevich.receiptrunner.model.entity.DiscountCard;
 import by.kantsevich.receiptrunner.model.entity.Product;
-import by.kantsevich.receiptrunner.model.product.builder.ReceiptProductBuilder;
-import by.kantsevich.receiptrunner.exception.DiscountCardNotFound;
+import by.kantsevich.receiptrunner.exception.DiscountCardNotFoundException;
 import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
 import by.kantsevich.receiptrunner.model.Receipt;
 import by.kantsevich.receiptrunner.model.product.ReceiptProduct;
@@ -34,7 +33,7 @@ public class ReceiptService {
     }
 
     public Receipt createReceipt(Map<Integer, Integer> products,
-                                 Integer numberDiscountCard) throws ProductNotFoundException, DiscountCardNotFound {
+                                 Integer numberDiscountCard) throws ProductNotFoundException, DiscountCardNotFoundException {
         List<ReceiptProduct> receiptProducts = new ArrayList<>();
         double discount = 0.0;
 
@@ -46,11 +45,11 @@ public class ReceiptService {
             Product product = productRepository.findById(Long.valueOf(productId))
                     .orElseThrow(() -> new ProductNotFoundException(String.format("Product with id = %d not found", productId)));
 
-            ReceiptProduct receiptProduct = new ReceiptProductBuilder()
-                    .setQty(products.get(productId))
-                    .setName(product.getName())
-                    .setPromotional(product.getPromotional())
-                    .setPrice(product.getPrice())
+            ReceiptProduct receiptProduct = ReceiptProduct.builder()
+                    .qty(products.get(productId))
+                    .name(product.getName())
+                    .isPromotional(product.getIsPromotional())
+                    .price(product.getPrice())
                     .build();
 
             receiptProducts.add(receiptProduct);
@@ -58,7 +57,7 @@ public class ReceiptService {
 
         if (numberDiscountCard != 0) {
             DiscountCard discountCard = discountCardRepository.findByNumber(numberDiscountCard)
-                    .orElseThrow(() -> new DiscountCardNotFound(String.format("Discount card with number = %d not found", numberDiscountCard)));
+                    .orElseThrow(() -> new DiscountCardNotFoundException(String.format("Discount card with number = %d not found", numberDiscountCard)));
 
             discount = discountCard.getDiscount();
         }

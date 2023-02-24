@@ -1,5 +1,6 @@
 package by.kantsevich.receiptrunner.printer;
 
+import by.kantsevich.receiptrunner.exception.ReceiptEmptyException;
 import by.kantsevich.receiptrunner.mapper.ReceiptMapper;
 import by.kantsevich.receiptrunner.model.Receipt;
 import by.kantsevich.receiptrunner.mapper.TextReceiptMapper;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+
+import java.util.Objects;
 
 @Component
 public class FileReceiptPrinter implements ReceiptPrinter {
@@ -27,6 +30,10 @@ public class FileReceiptPrinter implements ReceiptPrinter {
 
     @Override
     public void print(Receipt receipt) throws IOException {
+        if (Objects.isNull(receipt)) {
+            throw new ReceiptEmptyException("Receipt is empty");
+        }
+
         String textReceipt = textReceiptMapper.map(receipt) + "\n";
 
         if (!Files.exists(FILE_PATH)) {

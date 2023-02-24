@@ -1,5 +1,14 @@
 package by.kantsevich.receiptrunner.model.product;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class ReceiptProduct {
 
     public final static double DISCOUNT_PROMOTIONAL_PRODUCT = 10.0;
@@ -8,40 +17,6 @@ public class ReceiptProduct {
     private String name;
     private Double price;
     private Boolean isPromotional;
-
-    public ReceiptProduct() {}
-
-    public Integer getQty() {
-        return qty;
-    }
-
-    public void setQty(Integer qty) {
-        this.qty = qty;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Boolean getPromotional() {
-        return isPromotional;
-    }
-
-    public void setPromotional(Boolean promotional) {
-        isPromotional = promotional;
-    }
 
     public Double calculateTotal() {
         if (isPromotional && qty > 5) {

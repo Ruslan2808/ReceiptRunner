@@ -1,7 +1,7 @@
 package by.kantsevich.receiptrunner.advice;
 
 import by.kantsevich.receiptrunner.exception.ApiError;
-import by.kantsevich.receiptrunner.exception.DiscountCardNotFound;
+import by.kantsevich.receiptrunner.exception.DiscountCardNotFoundException;
 import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
 
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler({ProductNotFoundException.class, DiscountCardNotFound.class})
+    @ExceptionHandler({ProductNotFoundException.class, DiscountCardNotFoundException.class})
     public ResponseEntity<ApiError> handlePurchaseDataNotFound(RuntimeException e) {
         var apiError = new ApiError(
                 HttpStatus.NOT_FOUND,

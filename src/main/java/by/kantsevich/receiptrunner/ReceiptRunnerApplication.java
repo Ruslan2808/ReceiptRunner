@@ -1,6 +1,6 @@
 package by.kantsevich.receiptrunner;
 
-import by.kantsevich.receiptrunner.exception.DiscountCardNotFound;
+import by.kantsevich.receiptrunner.exception.DiscountCardNotFoundException;
 import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
 import by.kantsevich.receiptrunner.model.Receipt;
 import by.kantsevich.receiptrunner.parser.PurchaseDataParser;
@@ -48,7 +48,7 @@ public class ReceiptRunnerApplication implements CommandLineRunner {
 
             consoleReceiptPrinter.print(receipt);
             fileReceiptPrinter.print(receipt);
-        } catch (ProductNotFoundException | DiscountCardNotFound e) {
+        } catch (ProductNotFoundException | DiscountCardNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (IOException e) {
             System.out.println("Error writing receipt to file");
