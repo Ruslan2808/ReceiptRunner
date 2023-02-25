@@ -20,7 +20,7 @@ class PurchaseDataParserTest {
     class CommandLinePurchaseDataParserTest {
 
         @Test
-        void checkGetProductsReturnOrderedProducts() {
+        void checkGetProductsShouldReturnOrderedProducts() {
             var args = new String[] {"2-1", "1-2", "3-3", "5-4", "4-5"};
 
             Map<Integer, Integer> actualProducts = PurchaseDataParser.getProducts(args);
@@ -32,7 +32,7 @@ class PurchaseDataParserTest {
         }
 
         @Test
-        void checkGetProductsReturnOrderedSumProducts() {
+        void checkGetProductsShouldReturnOrderedSumProducts() {
             var args = new String[] {"2-1", "1-2", "3-3", "3-4", "5-4", "1-5", "4-5"};
 
             Map<Integer, Integer> actualProducts = PurchaseDataParser.getProducts(args);
@@ -45,7 +45,7 @@ class PurchaseDataParserTest {
 
         @ParameterizedTest
         @MethodSource(value = "notValidProductStringArguments")
-        void checkGetProductsReturnEmptyProducts(String[] args) {
+        void checkGetProductsShouldReturnEmptyProducts(String[] args) {
             Map<Integer, Integer> actualProducts = PurchaseDataParser.getProducts(args);
 
             assertThat(actualProducts).isEmpty();
@@ -53,7 +53,7 @@ class PurchaseDataParserTest {
 
         @ParameterizedTest
         @MethodSource(value = "discountCardStringArguments")
-        void checkGetNumberDiscountCardReturn1234(String[] args) {
+        void checkGetNumberDiscountCardShouldReturn1234(String[] args) {
             int expectedNumberDiscountCard = 1234;
 
             Integer actualNumberDiscountCard = PurchaseDataParser.getNumberDiscountCard(args);
@@ -63,7 +63,7 @@ class PurchaseDataParserTest {
 
         @ParameterizedTest
         @MethodSource(value = "notValidDiscountCardStringArguments")
-        void checkGetNumberDiscountCardReturn0(String[] args) {
+        void checkGetNumberDiscountCardShouldReturn0(String[] args) {
             Integer actualNumberDiscountCard = PurchaseDataParser.getNumberDiscountCard(args);
 
             assertThat(actualNumberDiscountCard).isZero();
@@ -109,7 +109,7 @@ class PurchaseDataParserTest {
     class UrlPurchaseDataParserTest {
 
         @Test
-        void checkGetProductsReturnOrderedProducts() {
+        void checkGetProductsShouldReturnOrderedProducts() {
             List<Integer> productsId = List.of(2, 1, 3, 5, 4);
             List<Integer> productsQty = List.of(1, 2, 3, 4, 5);
 
@@ -122,7 +122,7 @@ class PurchaseDataParserTest {
         }
 
         @Test
-        void checkGetProductsReturnOrderedSumProducts() {
+        void checkGetProductsShouldReturnOrderedSumProducts() {
             List<Integer> productsId = List.of(2, 1, 3, 3, 5, 1, 4);
             List<Integer> productsQty = List.of(1, 2, 3, 4, 4, 5, 5);
 
@@ -136,7 +136,7 @@ class PurchaseDataParserTest {
 
         @ParameterizedTest
         @MethodSource("productListsArguments")
-        void checkGetProductsReturnSize3(List<Integer> productsId, List<Integer> productsQty) {
+        void checkGetProductsShouldReturnSize3(List<Integer> productsId, List<Integer> productsQty) {
             int expectedSize = Math.min(productsId.size(), productsQty.size());
 
             Map<Integer, Integer> actualProducts = PurchaseDataParser.getProducts(productsId, productsQty);
@@ -146,7 +146,7 @@ class PurchaseDataParserTest {
 
         @ParameterizedTest
         @MethodSource("notValidProductListsArguments")
-        void checkGetProductsReturnEmptyProducts(List<Integer> productsId, List<Integer> productsQty) {
+        void checkGetProductsShouldReturnEmptyProducts(List<Integer> productsId, List<Integer> productsQty) {
             Map<Integer, Integer> actualProducts = PurchaseDataParser.getProducts(productsId, productsQty);
 
             assertThat(actualProducts).isEmpty();
@@ -161,9 +161,9 @@ class PurchaseDataParserTest {
 
         private static Stream<Arguments> notValidProductListsArguments() {
             return Stream.of(
-                    arguments(List.of(), List.of()),
                     arguments(List.of(1), List.of()),
-                    arguments(List.of(), List.of(1))
+                    arguments(List.of(), List.of(1)),
+                    arguments(List.of(), List.of())
             );
         }
     }

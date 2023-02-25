@@ -7,17 +7,22 @@ import by.kantsevich.receiptrunner.util.ReceiptTestBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ReceiptTest {
 
-    private Receipt receipt;
-
     @Nested
     class ReceiptTotalTest {
+
+        private Receipt receipt;
 
         @BeforeEach
         void setUp() {
@@ -40,7 +45,7 @@ class ReceiptTest {
         }
 
         @Test
-        void checkCalculateTotalReturnTotalWithDiscount() {
+        void checkCalculateTotalShouldReturnTotalWithDiscount() {
             double expectedTotal = 4.12;
 
             Double actualTotal = receipt.calculateTotal();
@@ -49,7 +54,7 @@ class ReceiptTest {
         }
 
         @Test
-        void checkCalculateUnDiscountedTotalReturnTotalWithoutDiscount() {
+        void checkCalculateUnDiscountedTotalShouldReturnTotalWithoutDiscount() {
             double expectedTotal = 4.25;
 
             Double actualTotal = receipt.calculateUnDiscountedTotal();
@@ -59,105 +64,92 @@ class ReceiptTest {
     }
 
     @Nested
-    class ReceiptTotalWhenZeroQtyTest {
+    class ReceiptTotalZeroArgumentsTest {
 
-        @BeforeEach
-        void setUp() {
+        @ParameterizedTest
+        @MethodSource(value = "zeroProductArguments")
+        void checkCalculateTotalShouldReturn0(int qty, double price) {
             ReceiptProduct receiptProductOne = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withQty(0)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Milk 3%")
                     .build();
             ReceiptProduct receiptProductTwo = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withQty(0)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Rye Bread 500 g")
                     .build();
-            receipt = ReceiptTestBuilder
+            Receipt receipt = ReceiptTestBuilder
                     .receipt()
                     .withReceiptProducts(List.of(receiptProductOne, receiptProductTwo))
                     .withDiscount(3.0)
                     .build();
-        }
 
-        @Test
-        void checkCalculateTotalReturnZero() {
             Double actualTotal = receipt.calculateTotal();
 
             assertThat(actualTotal).isZero();
         }
 
-        @Test
-        void checkCalculateUnDiscountedTotalReturnZero() {
-            Double actualTotal = receipt.calculateUnDiscountedTotal();
-
-            assertThat(actualTotal).isZero();
-        }
-    }
-
-    @Nested
-    class ReceiptTotalWhenZeroPriceTest {
-
-        @BeforeEach
-        void setUp() {
+        @ParameterizedTest
+        @MethodSource(value = "zeroProductArguments")
+        void checkCalculateUnDiscountedTotalShouldReturn0(int qty, double price) {
             ReceiptProduct receiptProductOne = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withPrice(0.0)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Milk 3%")
                     .build();
             ReceiptProduct receiptProductTwo = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withPrice(0.0)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Rye Bread 500 g")
                     .build();
-            receipt = ReceiptTestBuilder
+            Receipt receipt = ReceiptTestBuilder
                     .receipt()
                     .withReceiptProducts(List.of(receiptProductOne, receiptProductTwo))
                     .withDiscount(3.0)
                     .build();
-        }
 
-        @Test
-        void checkCalculateTotalReturnZero() {
-            Double actualTotal = receipt.calculateTotal();
-
-            assertThat(actualTotal).isZero();
-        }
-
-        @Test
-        void checkCalculateUnDiscountedTotalReturnZero() {
             Double actualTotal = receipt.calculateUnDiscountedTotal();
 
             assertThat(actualTotal).isZero();
         }
+
+        private static Stream<Arguments> zeroProductArguments() {
+            return Stream.of(
+                    arguments(0, 1.0),
+                    arguments(1, 0.0),
+                    arguments(0, 0.0)
+            );
+        }
     }
 
     @Nested
-    class ReceiptTotalWhenMaxQtyTest {
+    class ReceiptTotalMaxArgumentsTest {
 
-        @BeforeEach
-        void setUp() {
+        @ParameterizedTest
+        @MethodSource(value = "maxProductArguments")
+        void checkCalculateTotalShouldReturnTotalWhenMaxArguments(int qty, double price) {
             ReceiptProduct receiptProductOne = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withQty(Integer.MAX_VALUE)
-                    .withPrice(1000.0)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Milk 3%")
                     .build();
             ReceiptProduct receiptProductTwo = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withQty(Integer.MAX_VALUE)
-                    .withPrice(2000.0)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Rye Bread 500 g")
                     .build();
-            receipt = ReceiptTestBuilder
+            Receipt receipt = ReceiptTestBuilder
                     .receipt()
                     .withReceiptProducts(List.of(receiptProductOne, receiptProductTwo))
                     .withDiscount(3.0)
                     .build();
-        }
-
-        @Test
-        void checkCalculateTotalReturnTotal() {
             Double expectedTotal = Math.round(
                     receipt.calculateUnDiscountedTotal() * (1 - receipt.getDiscount() / 100.0) * 100.0
             ) / 100.0;
@@ -167,56 +159,26 @@ class ReceiptTest {
             assertThat(actualTotal).isEqualTo(expectedTotal);
         }
 
-        @Test
-        void checkCalculateUnDiscountedTotalReturnUnDiscountedTotal() {
-            Double expectedTotal = receipt.getReceiptProducts().stream()
-                    .map(ReceiptProduct::calculateTotal)
-                    .reduce(Double::sum)
-                    .orElse(0.0);
-
-            Double actualTotal = receipt.calculateUnDiscountedTotal();
-
-            assertThat(actualTotal).isEqualTo(expectedTotal);
-        }
-    }
-
-    @Nested
-    class ReceiptTotalWhenMaxPriceTest {
-
-        @BeforeEach
-        void setUp() {
+        @ParameterizedTest
+        @MethodSource(value = "maxProductArguments")
+        void checkCalculateUnDiscountedTotalShouldReturnUnDiscountedTotalWhenMaxArguments(int qty, double price) {
             ReceiptProduct receiptProductOne = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withQty(1000)
-                    .withPrice(Double.MAX_VALUE)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Milk 3%")
                     .build();
             ReceiptProduct receiptProductTwo = ReceiptProductTestBuilder
                     .receiptProduct()
-                    .withQty(2000)
-                    .withPrice(Double.MAX_VALUE)
+                    .withQty(qty)
+                    .withPrice(price)
                     .withName("Rye Bread 500 g")
                     .build();
-            receipt = ReceiptTestBuilder
+            Receipt receipt = ReceiptTestBuilder
                     .receipt()
                     .withReceiptProducts(List.of(receiptProductOne, receiptProductTwo))
                     .withDiscount(3.0)
                     .build();
-        }
-
-        @Test
-        void checkCalculateTotalReturnTotal() {
-            Double expectedTotal = Math.round(
-                    receipt.calculateUnDiscountedTotal() * (1 - receipt.getDiscount() / 100.0) * 100.0
-            ) / 100.0;
-
-            Double actualTotal = receipt.calculateTotal();
-
-            assertThat(actualTotal).isEqualTo(expectedTotal);
-        }
-
-        @Test
-        void checkCalculateUnDiscountedTotalReturnUnDiscountedTotal() {
             Double expectedTotal = receipt.getReceiptProducts().stream()
                     .map(ReceiptProduct::calculateTotal)
                     .reduce(Double::sum)
@@ -226,53 +188,13 @@ class ReceiptTest {
 
             assertThat(actualTotal).isEqualTo(expectedTotal);
         }
-    }
 
-    @Nested
-    class ReceiptTotalWhenMaxPriceAndQtyTest {
-
-        @BeforeEach
-        void setUp() {
-            ReceiptProduct receiptProductOne = ReceiptProductTestBuilder
-                    .receiptProduct()
-                    .withQty(Integer.MAX_VALUE)
-                    .withPrice(Double.MAX_VALUE)
-                    .withName("Milk 3%")
-                    .build();
-            ReceiptProduct receiptProductTwo = ReceiptProductTestBuilder
-                    .receiptProduct()
-                    .withQty(Integer.MAX_VALUE)
-                    .withPrice(Double.MAX_VALUE)
-                    .withName("Rye Bread 500 g")
-                    .build();
-            receipt = ReceiptTestBuilder
-                    .receipt()
-                    .withReceiptProducts(List.of(receiptProductOne, receiptProductTwo))
-                    .withDiscount(3.0)
-                    .build();
-        }
-
-        @Test
-        void checkCalculateTotalReturnTotal() {
-            Double expectedTotal = Math.round(
-                    receipt.calculateUnDiscountedTotal() * (1 - receipt.getDiscount() / 100.0) * 100.0
-            ) / 100.0;
-
-            Double actualTotal = receipt.calculateTotal();
-
-            assertThat(actualTotal).isEqualTo(expectedTotal);
-        }
-
-        @Test
-        void checkCalculateUnDiscountedTotalReturnUnDiscountedTotal() {
-            Double expectedTotal = receipt.getReceiptProducts().stream()
-                    .map(ReceiptProduct::calculateTotal)
-                    .reduce(Double::sum)
-                    .orElse(0.0);
-
-            Double actualTotal = receipt.calculateUnDiscountedTotal();
-
-            assertThat(actualTotal).isEqualTo(expectedTotal);
+        private static Stream<Arguments> maxProductArguments() {
+            return Stream.of(
+                    arguments(Integer.MAX_VALUE, 1000.0),
+                    arguments(1000, Double.MAX_VALUE),
+                    arguments(Integer.MAX_VALUE, Double.MAX_VALUE)
+            );
         }
     }
 }

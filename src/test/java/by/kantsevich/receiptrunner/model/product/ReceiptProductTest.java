@@ -3,13 +3,19 @@ package by.kantsevich.receiptrunner.model.product;
 import by.kantsevich.receiptrunner.util.ReceiptProductTestBuilder;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ReceiptProductTest {
 
     @Test
-    void checkCalculateTotalReturnTotal() {
+    void checkCalculateTotalShouldReturnTotal() {
         ReceiptProduct receiptProduct = ReceiptProductTestBuilder
                 .receiptProduct()
                 .withQty(6)
@@ -22,73 +28,7 @@ class ReceiptProductTest {
     }
 
     @Test
-    void checkCalculateTotalReturnZeroWhenZeroQty() {
-        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
-                .receiptProduct()
-                .withQty(0)
-                .build();
-
-        Double actualTotal = receiptProduct.calculateTotal();
-
-        assertThat(actualTotal).isZero();
-    }
-
-    @Test
-    void checkCalculateTotalReturnZeroWhenZeroPrice() {
-        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
-                .receiptProduct()
-                .withPrice(0.0)
-                .build();
-
-        Double actualTotal = receiptProduct.calculateTotal();
-
-        assertThat(actualTotal).isZero();
-    }
-
-    @Test
-    void checkCalculateTotalReturnTotalWhenMaxQty() {
-        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
-                .receiptProduct()
-                .withQty(Integer.MAX_VALUE)
-                .withPrice(1000.0)
-                .build();
-        Double expectedTotal = receiptProduct.getQty() * receiptProduct.getPrice();
-
-        Double actualTotal = receiptProduct.calculateTotal();
-
-        assertThat(actualTotal).isEqualTo(expectedTotal);
-    }
-
-    @Test
-    void checkCalculateTotalReturnTotalWhenMaxPrice() {
-        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
-                .receiptProduct()
-                .withQty(1000)
-                .withPrice(Double.MAX_VALUE)
-                .build();
-        Double expectedTotal = receiptProduct.getQty() * receiptProduct.getPrice();
-
-        Double actualTotal = receiptProduct.calculateTotal();
-
-        assertThat(actualTotal).isEqualTo(expectedTotal);
-    }
-
-    @Test
-    void checkCalculateTotalReturnTotalWhenMaxQtyAndPrice() {
-        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
-                .receiptProduct()
-                .withQty(Integer.MAX_VALUE)
-                .withPrice(Double.MAX_VALUE)
-                .build();
-        Double expectedTotal = receiptProduct.getQty() * receiptProduct.getPrice();
-
-        Double actualTotal = receiptProduct.calculateTotal();
-
-        assertThat(actualTotal).isEqualTo(expectedTotal);
-    }
-
-    @Test
-    void checkCalculateTotalReturnTotalWithDiscount() {
+    void checkCalculateTotalShouldReturnTotalWithDiscount() {
         ReceiptProduct receiptProduct = ReceiptProductTestBuilder
                 .receiptProduct()
                 .withQty(6)
@@ -102,7 +42,7 @@ class ReceiptProductTest {
     }
 
     @Test
-    void checkCalculateTotalReturnTotalWithoutDiscount() {
+    void checkCalculateTotalShouldReturnTotalWithoutDiscount() {
         ReceiptProduct receiptProduct = ReceiptProductTestBuilder
                 .receiptProduct()
                 .withQty(5)
@@ -113,5 +53,50 @@ class ReceiptProductTest {
         Double actualTotal = receiptProduct.calculateTotal();
 
         assertThat(actualTotal).isEqualTo(expectedTotal);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "zeroProductArguments")
+    void checkCalculateTotalShouldReturn0(int qty, double price) {
+        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
+                .receiptProduct()
+                .withQty(qty)
+                .withPrice(price)
+                .build();
+
+        Double actualTotal = receiptProduct.calculateTotal();
+
+        assertThat(actualTotal).isZero();
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "maxProductArguments")
+    void checkCalculateTotalShouldReturnTotalWhenMaxArguments(int qty, double price) {
+        ReceiptProduct receiptProduct = ReceiptProductTestBuilder
+                .receiptProduct()
+                .withQty(qty)
+                .withPrice(price)
+                .build();
+        Double expectedTotal = receiptProduct.getQty() * receiptProduct.getPrice();
+
+        Double actualTotal = receiptProduct.calculateTotal();
+
+        assertThat(actualTotal).isEqualTo(expectedTotal);
+    }
+
+    private static Stream<Arguments> maxProductArguments() {
+        return Stream.of(
+                arguments(Integer.MAX_VALUE, 1000.0),
+                arguments(1000, Double.MAX_VALUE),
+                arguments(Integer.MAX_VALUE, Double.MAX_VALUE)
+        );
+    }
+
+    private static Stream<Arguments> zeroProductArguments() {
+        return Stream.of(
+                arguments(0, 1.0),
+                arguments(1, 0.0),
+                arguments(0, 0.0)
+        );
     }
 }

@@ -36,7 +36,7 @@ class ConsoleReceiptPrinterTest {
     private ConsoleReceiptPrinter consoleReceiptPrinter;
 
     @Test
-    void checkPrinterThrowsReceiptEmptyException() {
+    void checkPrinterShouldThrowReceiptEmptyException() {
         assertThatException()
                 .isThrownBy(() -> consoleReceiptPrinter.print(null))
                 .isInstanceOf(ReceiptEmptyException.class);
@@ -49,14 +49,14 @@ class ConsoleReceiptPrinterTest {
         private ArgumentCaptor<Receipt> receiptCaptor;
 
         @Test
-        void checkPrintCallMap() {
+        void checkPrintShouldCallMap() {
             consoleReceiptPrinter.print(new Receipt());
 
             verify(textReceiptMapper).map(any(Receipt.class));
         }
 
         @Test
-        void checkPrintPassingMapArgument() {
+        void checkPrintShouldPassMapArgument() {
             ReceiptProduct receiptProduct = ReceiptProductTestBuilder
                     .receiptProduct()
                     .withName("Milk 3%")
@@ -87,7 +87,7 @@ class ConsoleReceiptPrinterTest {
         }
 
         @Test
-        void checkPrintCallPrintln() {
+        void checkPrintShouldCallPrintln() {
             when(textReceiptMapper.map(any(Receipt.class))).thenReturn(anyString());
 
             consoleReceiptPrinter.print(new Receipt());
@@ -96,7 +96,7 @@ class ConsoleReceiptPrinterTest {
         }
 
         @Test
-        void checkPrintPassingPrintlnArgument() {
+        void checkPrintShouldPassPrintlnArgument() {
             String expectedTextReceipt = "";
 
             when(textReceiptMapper.map(any(Receipt.class))).thenReturn(expectedTextReceipt);

@@ -42,7 +42,7 @@ class ReceiptServiceTest {
     private ReceiptService receiptService;
 
     @Test
-    void checkCreateReceiptReturnReceipt() {
+    void checkCreateReceiptShouldReturnReceipt() {
         Map<Integer, Integer> products = new LinkedHashMap<>();
         products.put(1, 2);
         int numberDiscountCard = 1234;
@@ -80,7 +80,7 @@ class ReceiptServiceTest {
     }
 
     @Test
-    void checkCreateReceiptThrowsProductNotFoundExceptionDueEmptyProducts() {
+    void checkCreateReceiptShouldThrowProductNotFoundExceptionDueEmptyProducts() {
         Map<Integer, Integer> products = new LinkedHashMap<>();
         int numberDiscountCard = 1234;
 
@@ -90,7 +90,7 @@ class ReceiptServiceTest {
     }
 
     @Test
-    void checkCreateReceiptThrowsProductNotFoundException() {
+    void checkCreateReceiptShouldThrowProductNotFoundException() {
         Map<Integer, Integer> products = new LinkedHashMap<>();
         products.put(1, 2);
         int numberDiscountCard = 1234;
@@ -103,11 +103,10 @@ class ReceiptServiceTest {
     }
 
     @Test
-    void checkCreateReceiptThrowsDiscountCardNotFoundException() {
+    void checkCreateReceiptShouldThrowDiscountCardNotFoundException() {
         Map<Integer, Integer> products = new LinkedHashMap<>();
         products.put(1, 2);
         int numberDiscountCard = 1234;
-
         Product product = ProductTestBuilder
                 .product()
                 .build();

@@ -36,7 +36,7 @@ class TextReceiptMapperTest {
     }
 
     @Test
-    void checkMapReturnTextReceiptWithProduct() {
+    void checkMapShouldReturnTextReceiptWithProduct() {
         String expectedProduct = String.format(
                 "|%-5.5s %-23.23s %8.8s$ %9.9s$|",
                 receiptProduct.getQty(),
@@ -51,7 +51,7 @@ class TextReceiptMapperTest {
     }
 
     @Test
-    void checkMapReturnTextReceiptWithDiscountPromotionalProduct() {
+    void checkMapShouldReturnTextReceiptWithDiscountPromotionalProduct() {
         String expectedDiscount = String.format(
                 "DISC: %.2f%%",
                 ReceiptProduct.DISCOUNT_PROMOTIONAL_PRODUCT
@@ -63,7 +63,7 @@ class TextReceiptMapperTest {
     }
 
     @Test
-    void checkMapReturnTextReceiptWithDiscount() {
+    void checkMapShouldReturnTextReceiptWithDiscount() {
         String expectedDiscount = String.format(
                 "|DISCOUNT %40.40s%%|",
                 String.format("%.2f", receipt.getDiscount())
@@ -79,7 +79,7 @@ class TextReceiptMapperTest {
     }
 
     @Test
-    void checkMapReturnTextReceiptWithTotal() {
+    void checkMapShouldReturnTextReceiptWithTotal() {
         String expectedTotal = String.format(
                 "|TOTAL %43.43s$|",
                 String.format("%.2f", receipt.calculateTotal())

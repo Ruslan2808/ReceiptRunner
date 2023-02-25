@@ -35,21 +35,21 @@ class FileReceiptPrinterTest {
     private ArgumentCaptor<Receipt> receiptCaptor;
 
     @Test
-    void checkPrintThrowsReceiptEmptyException()  {
+    void checkPrintShouldThrowReceiptEmptyException()  {
         assertThatException()
                 .isThrownBy(() -> fileReceiptPrinter.print(null))
                 .isInstanceOf(ReceiptEmptyException.class);
     }
 
     @Test
-    void checkPrintCallMap() throws IOException {
+    void checkPrintShouldCallMap() throws IOException {
         fileReceiptPrinter.print(new Receipt());
 
         verify(textReceiptMapper).map(any(Receipt.class));
     }
 
     @Test
-    void checkPrintPassingMapArgument() throws IOException {
+    void checkPrintShouldPassMapArgument() throws IOException {
         ReceiptProduct receiptProduct = ReceiptProductTestBuilder
                 .receiptProduct()
                 .withName("Milk 3%")
