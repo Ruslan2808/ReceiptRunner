@@ -24,7 +24,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,18 +87,18 @@ class ConsoleReceiptPrinterTest {
 
         @Test
         void checkPrintShouldCallPrintln() {
-            when(textReceiptMapper.map(any(Receipt.class))).thenReturn(anyString());
+            String expectedTextReceipt = "";
+            doReturn(expectedTextReceipt).when(textReceiptMapper).map(any(Receipt.class));
 
             consoleReceiptPrinter.print(new Receipt());
 
-            verify(printStream).println(anyString());
+            verify(printStream).println(expectedTextReceipt);
         }
 
         @Test
         void checkPrintShouldPassPrintlnArgument() {
             String expectedTextReceipt = "";
-
-            when(textReceiptMapper.map(any(Receipt.class))).thenReturn(expectedTextReceipt);
+            doReturn(expectedTextReceipt).when(textReceiptMapper).map(any(Receipt.class));
 
             consoleReceiptPrinter.print(new Receipt());
 

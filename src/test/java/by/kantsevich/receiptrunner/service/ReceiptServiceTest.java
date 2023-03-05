@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,8 +65,8 @@ class ReceiptServiceTest {
                 .withDiscount(discountCard.getDiscount())
                 .build();
 
-        when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
-        when(discountCardRepository.findByNumber(discountCard.getNumber())).thenReturn(Optional.of(discountCard));
+        doReturn(Optional.of(product)).when(productRepository).findById(product.getId());
+        doReturn(Optional.of(discountCard)).when(discountCardRepository).findByNumber(discountCard.getNumber());
 
         Receipt actualReceipt = receiptService.createReceipt(products, numberDiscountCard);
 
@@ -95,7 +96,7 @@ class ReceiptServiceTest {
         products.put(1, 2);
         int numberDiscountCard = 1234;
 
-        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+        doReturn(Optional.empty()).when(productRepository).findById(1L);
 
         assertThatException()
                 .isThrownBy(() -> receiptService.createReceipt(products, numberDiscountCard))
@@ -111,8 +112,8 @@ class ReceiptServiceTest {
                 .product()
                 .build();
 
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(discountCardRepository.findByNumber(numberDiscountCard)).thenReturn(Optional.empty());
+        doReturn(Optional.of(product)).when(productRepository).findById(1L);
+        doReturn(Optional.empty()).when(discountCardRepository).findByNumber(numberDiscountCard);
 
         assertThatException()
                 .isThrownBy(() -> receiptService.createReceipt(products, numberDiscountCard))
