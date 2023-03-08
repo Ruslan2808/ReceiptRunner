@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:8000/receipt_runner_db
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath*:db/schema.sql
+      data-locations: classpath*:db/data.sql
+
+cache:
+  algorithm: LRU
+  capacity: 5
