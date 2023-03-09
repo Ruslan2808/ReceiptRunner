@@ -1,6 +1,7 @@
 package by.kantsevich.receiptrunner.service;
 
-import by.kantsevich.receiptrunner.exception.ProductAlreadyExistsException;
+import by.kantsevich.receiptrunner.dto.product.ProductRequest;
+import by.kantsevich.receiptrunner.dto.product.ProductResponse;
 import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
 import by.kantsevich.receiptrunner.model.entity.Product;
 
@@ -13,41 +14,41 @@ import java.util.List;
  */
 public interface ProductService {
     /**
-     * Returns a list of all products in the database
+     * Returns a list of all products of type in the database
      *
-     * @return the list of all products or an empty list if there are none in the database
+     * @return the list of all products of type {@link ProductResponse} or an empty list if there are none
+     * in the database
      */
-    List<Product> findAll();
+    List<ProductResponse> findAll();
 
     /**
      * Returns a product by id or throws a {@link ProductNotFoundException}
      * if the product with the given id is not found in the database
      *
      * @param id the product id
-     * @return the product with given id
+     * @return the product of type {@link ProductResponse} with given id
      * @throws ProductNotFoundException if the product with the given id is not found in the database
      */
-    Product findById(Long id);
+    ProductResponse findById(Long id);
 
     /**
-     * Saves the product in the database or throws a {@link ProductAlreadyExistsException} if a product with
-     * the given id already exists
+     * Saves the product in the database
      *
-     * @param product the product to save
-     * @throws ProductAlreadyExistsException if a product with the given id already exists in the database
+     * @param productRequest the product of type {@link ProductRequest} to save
+     * @return the saved product of type {@link ProductResponse}
      */
-    void save(Product product);
+    ProductResponse save(ProductRequest productRequest);
 
     /**
      * Updates the product with the given id in the database or throws a {@link ProductNotFoundException}
      * if the product with the given id is not found
      *
-     * @param id      the id of the updated product
-     * @param product the product with data to update an existing product
-     * @return the updated product
+     * @param id             the id of the updated product
+     * @param productRequest the product of type {@link ProductRequest} with data to update an existing product
+     * @return the updated product of type {@link ProductResponse}
      * @throws ProductNotFoundException if the product with the given id is not found in the database
      */
-    Product update(Long id, Product product);
+    ProductResponse update(Long id, ProductRequest productRequest);
 
     /**
      * Deletes the product with the given id from the database or throws a {@link ProductNotFoundException}

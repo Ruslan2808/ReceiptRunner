@@ -45,7 +45,6 @@ The project is running on **```localhost:8080```**
 >request body example:<br>
 >```javascript
 >{
->  "id": 11,
 >  "name": "Chicken 1.5kg",
 >  "price": 15.54,
 >  "isPromotional": false
@@ -57,7 +56,6 @@ The project is running on **```localhost:8080```**
 >request body example:<br>
 >```javascript
 >{
->  "id": 4,
 >  "name": "Cheese 1kg",
 >  "price": 10.54,
 >  "isPromotional": true
@@ -80,7 +78,6 @@ The project is running on **```localhost:8080```**
 >request body example:<br>
 >```javascript
 >{
->  "id": 4,
 >  "number": 3456,
 >  "discount": 3.0
 >}
@@ -91,7 +88,6 @@ The project is running on **```localhost:8080```**
 >request body example:<br>
 >```javascript
 >{
->  "id": 2,
 >  "number": 7890,
 >  "price": 5.0
 >}

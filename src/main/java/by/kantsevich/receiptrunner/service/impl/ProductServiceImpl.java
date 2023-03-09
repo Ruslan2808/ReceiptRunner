@@ -1,7 +1,9 @@
 package by.kantsevich.receiptrunner.service.impl;
 
-import by.kantsevich.receiptrunner.exception.ProductAlreadyExistsException;
+import by.kantsevich.receiptrunner.dto.product.ProductRequest;
+import by.kantsevich.receiptrunner.dto.product.ProductResponse;
 import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
+import by.kantsevich.receiptrunner.mapper.ProductMapper;
 import by.kantsevich.receiptrunner.model.entity.Product;
 import by.kantsevich.receiptrunner.repository.ProductRepository;
 import by.kantsevich.receiptrunner.service.ProductService;
@@ -20,10 +22,12 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
     /**
@@ -31,8 +35,11 @@ public class ProductServiceImpl implements ProductService {
      *
      * @return {@inheritDoc}
      */
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductResponse> findAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::mapToProductResponse)
+                .toList();
     }
 
     /**
@@ -42,43 +49,45 @@ public class ProductServiceImpl implements ProductService {
      * @return {@inheritDoc}
      * @throws ProductNotFoundException {@inheritDoc}
      */
-    public Product findById(Long id) {
+    public ProductResponse findById(Long id) {
         return productRepository.findById(id)
+                .map(productMapper::mapToProductResponse)
                 .orElseThrow(() -> new ProductNotFoundException(String.format("Product with id = %d not found", id)));
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param product {@inheritDoc}
+     * @param productRequest {@inheritDoc}
      * @return {@inheritDoc}
-     * @throws ProductAlreadyExistsException {@inheritDoc}
      */
-    public void save(Product product) {
-        productRepository.findById(product.getId())
-                .ifPresent(p -> {
-                    throw new ProductAlreadyExistsException(String.format("Product with id = %d already exists", product.getId()));
-                });
+    public ProductResponse save(ProductRequest productRequest) {
+        Product product = productMapper.mapToProduct(productRequest);
 
-        productRepository.save(product);
+        Product saveProduct = productRepository.save(product);
+
+        return productMapper.mapToProductResponse(saveProduct);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param id      {@inheritDoc}
-     * @param product {@inheritDoc}
+     * @param id             {@inheritDoc}
+     * @param productRequest {@inheritDoc}
      * @return {@inheritDoc}
      * @throws ProductNotFoundException {@inheritDoc}
      */
-    public Product update(Long id, Product product) {
-        Product updateProduct = findById(id);
+    public ProductResponse update(Long id, ProductRequest productRequest) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(String.format("Product with id = %d not found", id)));
 
-        updateProduct.setName(product.getName());
-        updateProduct.setPrice(product.getPrice());
-        updateProduct.setIsPromotional(product.getIsPromotional());
+        product.setName(productRequest.getName());
+        product.setPrice(productRequest.getPrice());
+        product.setIsPromotional(productRequest.getIsPromotional());
 
-        return productRepository.save(updateProduct);
+        Product updateProduct = productRepository.save(product);
+
+        return productMapper.mapToProductResponse(updateProduct);
     }
 
     /**

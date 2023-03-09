@@ -26,7 +26,7 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    @ExceptionHandler({ProductAlreadyExistsException.class, DiscountCardAlreadyExistsException.class})
+    @ExceptionHandler(DiscountCardAlreadyExistsException.class)
     public ResponseEntity<ApiError> handlePurchaseDataAlreadyExists(RuntimeException e) {
         var apiError = new ApiError(
                 HttpStatus.CONFLICT,

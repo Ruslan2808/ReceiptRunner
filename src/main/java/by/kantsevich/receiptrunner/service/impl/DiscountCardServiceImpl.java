@@ -1,7 +1,10 @@
 package by.kantsevich.receiptrunner.service.impl;
 
+import by.kantsevich.receiptrunner.dto.discount_card.DiscountCardRequest;
+import by.kantsevich.receiptrunner.dto.discount_card.DiscountCardResponse;
 import by.kantsevich.receiptrunner.exception.DiscountCardAlreadyExistsException;
 import by.kantsevich.receiptrunner.exception.DiscountCardNotFoundException;
+import by.kantsevich.receiptrunner.mapper.DiscountCardMapper;
 import by.kantsevich.receiptrunner.model.entity.DiscountCard;
 import by.kantsevich.receiptrunner.repository.DiscountCardRepository;
 import by.kantsevich.receiptrunner.service.DiscountCardService;
@@ -20,10 +23,12 @@ import java.util.List;
 public class DiscountCardServiceImpl implements DiscountCardService {
 
     private final DiscountCardRepository discountCardRepository;
+    private final DiscountCardMapper discountCardMapper;
 
     @Autowired
-    public DiscountCardServiceImpl(DiscountCardRepository discountCardRepository) {
+    public DiscountCardServiceImpl(DiscountCardRepository discountCardRepository, DiscountCardMapper discountCardMapper) {
         this.discountCardRepository = discountCardRepository;
+        this.discountCardMapper = discountCardMapper;
     }
 
     /**
@@ -31,8 +36,11 @@ public class DiscountCardServiceImpl implements DiscountCardService {
      *
      * @return {@inheritDoc}
      */
-    public List<DiscountCard> findAll() {
-        return discountCardRepository.findAll();
+    public List<DiscountCardResponse> findAll() {
+        return discountCardRepository.findAll()
+                .stream()
+                .map(discountCardMapper::mapToDiscountCardResponse)
+                .toList();
     }
 
     /**
@@ -42,53 +50,54 @@ public class DiscountCardServiceImpl implements DiscountCardService {
      * @return {@inheritDoc}
      * @throws DiscountCardNotFoundException {@inheritDoc}
      */
-    public DiscountCard findById(Long id) {
+    public DiscountCardResponse findById(Long id) {
         return discountCardRepository.findById(id)
+                .map(discountCardMapper::mapToDiscountCardResponse)
                 .orElseThrow(() -> new DiscountCardNotFoundException(String.format("Discount card with id = %d not found", id)));
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param discountCard {@inheritDoc}
+     * @param discountCardRequest {@inheritDoc}
      * @return {@inheritDoc}
-     * @throws DiscountCardNotFoundException      {@inheritDoc}
      * @throws DiscountCardAlreadyExistsException {@inheritDoc}
      */
-    public void save(DiscountCard discountCard) {
-        discountCardRepository.findById(discountCard.getId())
+    public DiscountCardResponse save(DiscountCardRequest discountCardRequest) {
+        discountCardRepository.findByNumber(discountCardRequest.getNumber())
                 .ifPresent(p -> {
-                    throw new DiscountCardAlreadyExistsException(String.format("Discount card with id = %d already exists", discountCard.getId()));
+                    throw new DiscountCardAlreadyExistsException(String.format("Discount card with number = %d already exists", discountCardRequest.getNumber()));
                 });
-        discountCardRepository.findByNumber(discountCard.getNumber())
-                .ifPresent(p -> {
-                    throw new DiscountCardAlreadyExistsException(String.format("Discount card with number = %d already exists", discountCard.getNumber()));
-                });
+        DiscountCard discountCard = discountCardMapper.mapToDiscountCard(discountCardRequest);
 
-        discountCardRepository.save(discountCard);
+        DiscountCard saveDiscountCard = discountCardRepository.save(discountCard);
+
+        return discountCardMapper.mapToDiscountCardResponse(saveDiscountCard);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param id           {@inheritDoc}
-     * @param discountCard {@inheritDoc}
+     * @param id                  {@inheritDoc}
+     * @param discountCardRequest {@inheritDoc}
      * @return {@inheritDoc}
      * @throws DiscountCardNotFoundException      {@inheritDoc}
      * @throws DiscountCardAlreadyExistsException {@inheritDoc}
      */
-    public DiscountCard update(Long id, DiscountCard discountCard) {
-        DiscountCard updateDiscountCard = findById(id);
-
-        discountCardRepository.findByNumber(discountCard.getNumber())
+    public DiscountCardResponse update(Long id, DiscountCardRequest discountCardRequest) {
+        DiscountCard discountCard = discountCardRepository.findById(id)
+                .orElseThrow(() -> new DiscountCardNotFoundException(String.format("Discount card with id = %d not found", id)));
+        discountCardRepository.findByNumber(discountCardRequest.getNumber())
                 .ifPresent(p -> {
-                    throw new DiscountCardAlreadyExistsException(String.format("Discount card with number = %d already exists", discountCard.getNumber()));
+                    throw new DiscountCardAlreadyExistsException(String.format("Discount card with number = %d already exists", discountCardRequest.getNumber()));
                 });
 
-        updateDiscountCard.setNumber(discountCard.getNumber());
-        updateDiscountCard.setDiscount(discountCard.getDiscount());
+        discountCard.setNumber(discountCardRequest.getNumber());
+        discountCard.setDiscount(discountCardRequest.getDiscount());
 
-        return discountCardRepository.save(updateDiscountCard);
+        DiscountCard updateDiscountCard = discountCardRepository.save(discountCard);
+
+        return discountCardMapper.mapToDiscountCardResponse(updateDiscountCard);
     }
 
     /**
