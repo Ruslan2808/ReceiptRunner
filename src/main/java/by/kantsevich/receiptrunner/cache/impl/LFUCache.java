@@ -10,15 +10,15 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * An implementation of the {@code Cache} interface that uses an algorithm that
+ * An implementation of the {@link Cache} interface that uses an algorithm that
  * counts the frequency of use of each element and removes those that are least
- * accessed (LFU). A {@code HashMap} is used to store key-value mappings, key-number-of-hits
+ * accessed (LFU). A {@link HashMap} is used to store key-value mappings, key-number-of-hits
  * mappings, and number-of-hits-to-set-of-associated-key mappings (stored in a
- * {@code LinkedHashSet}). To find the least frequently accessed key, the {@code minKeyFreq}
+ * {@link LinkedHashSet}). To find the least frequently accessed key, the {@code minKeyFreq}
  * counter variable is used, which stores the minimum frequency of accessing cache keys.
  *
- * @param <K> the type of keys maintained by this cache
- * @param <V> the type of mapped values
+ * @param <K> {@inheritDoc}
+ * @param <V> {@inheritDoc}
  * @author Ruslan Kantsevich
  */
 @Data
@@ -44,11 +44,10 @@ public class LFUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Returns key mapping as {@code Optional} from this cache, if present
+     * {@inheritDoc}
      *
-     * @param key the key whose mapping is to be retrieved from the cache
-     * @return the {@code Optional} value associated with key, or {@code Optional.empty()}
-     * if there was no mapping for key.
+     * @param key {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public Optional<V> get(K key) {
@@ -63,14 +62,11 @@ public class LFUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Associates the specified value with the specified key in this cache. If the cache
-     * previously contained a mapping for the key, the old value is replaced with the
-     * specified value.
+     * {@inheritDoc}
      *
-     * @param key   the key with which the specified value is to be associated
-     * @param value the value to be associated with the specified key
-     * @return the {@code Optional} value associated with key, or {@code Optional.empty()}
-     * if there was no mapping for key.
+     * @param key   {@inheritDoc}
+     * @param value {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public Optional<V> put(K key, V value) {
@@ -102,11 +98,10 @@ public class LFUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Removes the mapping for a key from this cache if it is present
+     * {@inheritDoc}
      *
-     * @param key the key whose mapping is to be removed from the cache
-     * @return the {@code Optional} value associated with key, or {@code Optional.empty()}
-     * if there was no mapping for key.
+     * @param key {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public Optional<V> remove(K key) {
@@ -126,9 +121,9 @@ public class LFUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Returns the number of key-value mappings in this cache.
+     * {@inheritDoc}
      *
-     * @return the number of key-value mappings in this cache
+     * @return {@inheritDoc}
      */
     @Override
     public int size() {
@@ -136,8 +131,7 @@ public class LFUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Removes all key-value mappings from this cache. The cache will be empty after this
-     * call returns.
+     * {@inheritDoc}
      */
     @Override
     public void clear() {

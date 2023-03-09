@@ -7,13 +7,13 @@ import lombok.Data;
 import java.util.*;
 
 /**
- * An implementation of the {@code Cache} interface that uses the least recently used (LRU) algorithm,
+ * An implementation of the {@link Cache} interface that uses the least recently used (LRU) algorithm,
  * where the key-value mappings that has not been used the longest is evicted from the cache.
- * {@code LinkedHashMap} is used to store key-value mappings, including their order.
+ * {@link LinkedHashMap} is used to store key-value mappings, including their order.
  * The least recently used item is stored at the beginning of the cache.
  *
- * @param <K> the type of keys maintained by this cache
- * @param <V> the type of mapped values
+ * @param <K> {@inheritDoc}
+ * @param <V> {@inheritDoc}
  * @author Ruslan Kantsevich
  */
 @Data
@@ -33,11 +33,10 @@ public class LRUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Returns key mapping as {@code Optional} from this cache, if present
+     * {@inheritDoc}
      *
-     * @param key the key whose mapping is to be retrieved from the cache
-     * @return the {@code Optional} value associated with key, or {@code Optional.empty()}
-     * if there was no mapping for key.
+     * @param key {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public Optional<V> get(K key) {
@@ -53,14 +52,11 @@ public class LRUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Associates the specified value with the specified key in this cache. If the cache
-     * previously contained a mapping for the key, the old value is replaced with the
-     * specified value.
+     * {@inheritDoc}
      *
-     * @param key   key with which the specified value is to be associated
-     * @param value value to be associated with the specified key
-     * @return the {@code Optional} value associated with key, or {@code Optional.empty()}
-     * if there was no mapping for key.
+     * @param key   {@inheritDoc}
+     * @param value {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public Optional<V> put(K key, V value) {
@@ -80,11 +76,10 @@ public class LRUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Removes the mapping for a key from this cache if it is present
+     * {@inheritDoc}
      *
-     * @param key key whose mapping is to be removed from the cache
-     * @return the {@code Optional} value associated with key, or {@code Optional.empty()}
-     * if there was no mapping for key.
+     * @param key {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public Optional<V> remove(K key) {
@@ -98,9 +93,9 @@ public class LRUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Returns the number of key-value mappings in this cache.
+     * {@inheritDoc}
      *
-     * @return the number of key-value mappings in this cache
+     * @return {@inheritDoc}
      */
     @Override
     public int size() {
@@ -108,8 +103,7 @@ public class LRUCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * Removes all key-value mappings from this cache. The cache will be empty after this
-     * call returns.
+     * {@inheritDoc}
      */
     @Override
     public void clear() {
