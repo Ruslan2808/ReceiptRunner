@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * An implementation of the {@link DiscountCardService} interface for performing operations with {@link DiscountCard}
+ *
+ * @author Ruslan Kantsevich
+ */
 @Service
 public class DiscountCardServiceImpl implements DiscountCardService {
 
@@ -21,15 +26,35 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         this.discountCardRepository = discountCardRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public List<DiscountCard> findAll() {
         return discountCardRepository.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws DiscountCardNotFoundException {@inheritDoc}
+     */
     public DiscountCard findById(Long id) {
         return discountCardRepository.findById(id)
                 .orElseThrow(() -> new DiscountCardNotFoundException(String.format("Discount card with id = %d not found", id)));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param discountCard {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws DiscountCardNotFoundException      {@inheritDoc}
+     * @throws DiscountCardAlreadyExistsException {@inheritDoc}
+     */
     public void save(DiscountCard discountCard) {
         discountCardRepository.findById(discountCard.getId())
                 .ifPresent(p -> {
@@ -43,6 +68,15 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         discountCardRepository.save(discountCard);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id           {@inheritDoc}
+     * @param discountCard {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws DiscountCardNotFoundException      {@inheritDoc}
+     * @throws DiscountCardAlreadyExistsException {@inheritDoc}
+     */
     public DiscountCard update(Long id, DiscountCard discountCard) {
         DiscountCard updateDiscountCard = findById(id);
 
@@ -57,6 +91,12 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         return discountCardRepository.save(updateDiscountCard);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id {@inheritDoc}
+     * @throws DiscountCardNotFoundException {@inheritDoc}
+     */
     public void deleteById(Long id) {
         findById(id);
 

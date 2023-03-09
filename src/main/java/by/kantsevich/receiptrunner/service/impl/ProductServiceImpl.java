@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * An implementation of the {@link ProductService} interface for performing operations with {@link Product}
+ *
+ * @author Ruslan Kantsevich
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -21,15 +26,34 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ProductNotFoundException {@inheritDoc}
+     */
     public Product findById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(String.format("Product with id = %d not found", id)));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param product {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ProductAlreadyExistsException {@inheritDoc}
+     */
     public void save(Product product) {
         productRepository.findById(product.getId())
                 .ifPresent(p -> {
@@ -39,6 +63,14 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id      {@inheritDoc}
+     * @param product {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws ProductNotFoundException {@inheritDoc}
+     */
     public Product update(Long id, Product product) {
         Product updateProduct = findById(id);
 
@@ -49,6 +81,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(updateProduct);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id {@inheritDoc}
+     * @throws ProductNotFoundException {@inheritDoc}
+     */
     public void deleteById(Long id) {
         findById(id);
 
