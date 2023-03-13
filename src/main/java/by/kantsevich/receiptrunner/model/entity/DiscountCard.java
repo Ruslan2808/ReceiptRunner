@@ -2,18 +2,18 @@ package by.kantsevich.receiptrunner.model.entity;
 
 import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "discount_card")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class DiscountCard {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
     private Double discount;
