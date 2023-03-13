@@ -50,20 +50,17 @@ public class ProductAspect {
         var id = (Long) joinPoint.getArgs()[0];
 
         var product = (ProductResponse) joinPoint.proceed();
+        productCache.put(id, product);
 
-        return productCache.put(id, product).get();
+        return product;
     }
 
-    @Around(value = "execution(* by.kantsevich.receiptrunner.repository.ProductRepository.deleteById(..))")
+    @Around(value = "execution(* by.kantsevich.receiptrunner.service.ProductService.deleteById(..))")
     public ProductResponse aroundDeleteByIdMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         var id = (Long) joinPoint.getArgs()[0];
 
         joinPoint.proceed();
-        var product = productCache.get(id);
-        if (product.isEmpty()) {
-            return null;
-        }
 
-        return productCache.remove(id).get();
+        return productCache.remove(id).orElse(null);
     }
 }

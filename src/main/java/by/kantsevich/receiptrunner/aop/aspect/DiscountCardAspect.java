@@ -50,20 +50,17 @@ public class DiscountCardAspect {
         var id = (Long) joinPoint.getArgs()[0];
 
         var discountCard = (DiscountCardResponse) joinPoint.proceed();
+        discountCardCache.put(id, discountCard);
 
-        return discountCardCache.put(id, discountCard).get();
+        return discountCard;
     }
 
-    @Around(value = "execution(* by.kantsevich.receiptrunner.repository.DiscountCardRepository.deleteById(..))")
+    @Around(value = "execution(* by.kantsevich.receiptrunner.service.DiscountCardService.deleteById(..))")
     public DiscountCardResponse aroundDeleteByIdMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         var id = (Long) joinPoint.getArgs()[0];
 
         joinPoint.proceed();
-        var discountCard = discountCardCache.get(id);
-        if (discountCard.isEmpty()) {
-            return null;
-        }
 
-        return discountCardCache.remove(id).get();
+        return discountCardCache.remove(id).orElse(null);
     }
 }
