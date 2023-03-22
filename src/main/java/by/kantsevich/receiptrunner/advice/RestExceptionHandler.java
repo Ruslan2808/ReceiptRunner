@@ -1,8 +1,6 @@
 package by.kantsevich.receiptrunner.advice;
 
-import by.kantsevich.receiptrunner.exception.ApiError;
-import by.kantsevich.receiptrunner.exception.DiscountCardNotFoundException;
-import by.kantsevich.receiptrunner.exception.ProductNotFoundException;
+import by.kantsevich.receiptrunner.exception.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +14,37 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({ProductNotFoundException.class, DiscountCardNotFoundException.class})
     public ResponseEntity<ApiError> handlePurchaseDataNotFound(RuntimeException e) {
-        var apiError = new ApiError(
-                HttpStatus.NOT_FOUND,
+        var purchaseDataNotFoundError = getApiError(HttpStatus.NOT_FOUND, e);
+
+        return new ResponseEntity<>(purchaseDataNotFoundError, purchaseDataNotFoundError.getStatus());
+    }
+
+    @ExceptionHandler({PdfIOException.class, OutputReceiptException.class})
+    public ResponseEntity<ApiError> handleIOReceipt(RuntimeException e) {
+        var ioReceiptError = getApiError(HttpStatus.INTERNAL_SERVER_ERROR, e);
+
+        return new ResponseEntity<>(ioReceiptError, ioReceiptError.getStatus());
+    }
+
+    @ExceptionHandler(PdfNotFoundException.class)
+    public ResponseEntity<ApiError> handlePdfNotFound(RuntimeException e) {
+        var pdfNotFoundError = getApiError(HttpStatus.NOT_FOUND, e);
+
+        return new ResponseEntity<>(pdfNotFoundError, pdfNotFoundError.getStatus());
+    }
+
+    @ExceptionHandler(ReceiptEmptyException.class)
+    public ResponseEntity<ApiError> handleReceiptEmpty(RuntimeException e) {
+        var receiptEmptyError = getApiError(HttpStatus.BAD_REQUEST, e);
+
+        return new ResponseEntity<>(receiptEmptyError, receiptEmptyError.getStatus());
+    }
+
+    private ApiError getApiError(HttpStatus httpStatus, RuntimeException e) {
+        return new ApiError(
+                httpStatus,
                 LocalDateTime.now(),
                 e.getMessage()
         );
-
-        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
-
 }

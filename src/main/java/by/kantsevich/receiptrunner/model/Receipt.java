@@ -1,7 +1,5 @@
 package by.kantsevich.receiptrunner.model;
 
-import by.kantsevich.receiptrunner.model.product.ReceiptProduct;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,5 +29,4 @@ public class Receipt {
     public Double calculateTotal() {
         return Math.round(calculateUnDiscountedTotal() * (1 - this.discount / 100.0) * 100.0) / 100.0;
     }
-
 }

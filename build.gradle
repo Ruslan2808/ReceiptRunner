@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation 'com.itextpdf:itextpdf:5.5.13.2'
 }
 
 bootJar {

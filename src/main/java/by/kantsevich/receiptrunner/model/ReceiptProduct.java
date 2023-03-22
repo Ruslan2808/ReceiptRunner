@@ -1,4 +1,4 @@
-package by.kantsevich.receiptrunner.model.product;
+package by.kantsevich.receiptrunner.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,5 +25,4 @@ public class ReceiptProduct {
 
         return price * qty;
     }
-
 }
