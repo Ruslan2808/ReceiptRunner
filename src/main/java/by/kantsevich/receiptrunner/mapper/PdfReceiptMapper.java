@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Component
 public class PdfReceiptMapper implements ReceiptMapper<Document> {
@@ -154,29 +156,19 @@ public class PdfReceiptMapper implements ReceiptMapper<Document> {
                         "TOTAL".equals(columnTitle) ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT))
                 .forEach(productsTable::addCell);
 
-        for (ReceiptProduct receiptProduct : receipt.getReceiptProducts()) {
-            var qty = receiptProduct.getQty().toString();
-            var name= receiptProduct.getName();
-            var price = String.format("%.2f$", receiptProduct.getPrice());
-            var total = String.format("%.2f$", receiptProduct.calculateTotal());
-
-            var qtyCell = getCellInPdfReceipt(qty, Element.ALIGN_LEFT);
-            var nameCell = getCellInPdfReceipt(name, Element.ALIGN_LEFT);
-            var priceCell = getCellInPdfReceipt(price, Element.ALIGN_LEFT);
-            var totalCell = getCellInPdfReceipt(total, Element.ALIGN_RIGHT);
-
-            if (receiptProduct.getIsPromotional() && receiptProduct.getQty() > 5) {
-                String discount = String.format("DISC: %.2f%%", ReceiptProduct.DISCOUNT_PROMOTIONAL_PRODUCT);
-                var discountParagraph = new Paragraph(discount, FONT);
-
-                nameCell.addElement(discountParagraph);
-            }
-
-            productsTable.addCell(qtyCell);
-            productsTable.addCell(nameCell);
-            productsTable.addCell(priceCell);
-            productsTable.addCell(totalCell);
-        }
+        AtomicInteger cellIndex = new AtomicInteger(1);
+        List<ReceiptProduct> receiptProducts = receipt.getReceiptProducts();
+        receiptProducts.stream()
+                .flatMap(receiptProduct -> Stream.of(
+                        receiptProduct.getQty().toString(),
+                        receiptProduct.getIsPromotional() && receiptProduct.getQty() > 5 ?
+                                receiptProduct.getName() + String.format("\nDISC: %.2f%%", ReceiptProduct.DISCOUNT_PROMOTIONAL_PRODUCT) :
+                                receiptProduct.getName(),
+                        String.format("%.2f$", receiptProduct.getPrice()),
+                        String.format("%.2f$", receiptProduct.calculateTotal())))
+                .map(cellContent -> getCellInPdfReceipt(cellContent,
+                        cellIndex.getAndIncrement() % 4 == 0 ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT))
+                .forEach(productsTable::addCell);
 
         pdfReceipt.add(productsTable);
     }
