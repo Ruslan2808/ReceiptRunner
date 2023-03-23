@@ -47,5 +47,4 @@ public class PurchaseDataParser {
                 .findFirst()
                 .orElse(0);
     }
-
 }

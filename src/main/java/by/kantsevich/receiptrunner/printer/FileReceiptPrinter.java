@@ -1,5 +1,6 @@
 package by.kantsevich.receiptrunner.printer;
 
+import by.kantsevich.receiptrunner.exception.OutputReceiptException;
 import by.kantsevich.receiptrunner.exception.ReceiptEmptyException;
 import by.kantsevich.receiptrunner.mapper.ReceiptMapper;
 import by.kantsevich.receiptrunner.model.Receipt;
@@ -29,19 +30,22 @@ public class FileReceiptPrinter implements ReceiptPrinter {
     }
 
     @Override
-    public void print(Receipt receipt) throws IOException {
+    public void print(Receipt receipt) {
         if (Objects.isNull(receipt)) {
             throw new ReceiptEmptyException("Receipt is empty");
         }
 
         String textReceipt = textReceiptMapper.map(receipt) + "\n";
 
-        if (!Files.exists(FILE_PATH)) {
-            Files.createFile(FILE_PATH);
+        try {
+            if (!Files.exists(FILE_PATH)) {
+                Files.createFile(FILE_PATH);
+            }
+
+            Files.write(FILE_PATH, textReceipt.getBytes(), StandardOpenOption.APPEND);
+            System.out.printf("The receipt is written to the file %s%n", FILE_PATH);
+        } catch (IOException e) {
+            throw new OutputReceiptException(e.getMessage());
         }
-
-        Files.write(FILE_PATH, textReceipt.getBytes(), StandardOpenOption.APPEND);
-        System.out.printf("The receipt is written to the file %s%n", FILE_PATH);
     }
-
 }

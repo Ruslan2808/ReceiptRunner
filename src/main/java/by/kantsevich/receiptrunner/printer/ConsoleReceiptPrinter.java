@@ -29,5 +29,4 @@ public class ConsoleReceiptPrinter implements ReceiptPrinter {
 
         System.out.println(textReceipt);
     }
-
 }
